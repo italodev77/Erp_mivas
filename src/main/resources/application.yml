@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: mivas
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/enterpriseDB
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: true
+
+mivas:
+  security:
+    secret: 5454211844848asd4wwd4w
