@@ -64,18 +64,7 @@ public class AuthenticationController {
         return ResponseEntity.status(HttpStatus.CREATED).body("Usuário registrado com sucesso.");
     }
 
-    @GetMapping("/all-users")
-    public ResponseEntity<List<User>> getAllUsers() {
-        log.info("Listagem de todos os usuários requisitada.");
-        List<User> users = userService.getAllUsers();
-        return ResponseEntity.ok(users);
-    }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUserById(@PathVariable Long id) {
-        log.info("Remoção de usuário com ID: {}", id);
-        userService.deleteUser(id);
-        return ResponseEntity.noContent().build();
-    }
+
 
 }
