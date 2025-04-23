@@ -1,5 +1,6 @@
 package dev.enterprisemanager.mivas.modules.user.entity;
 
+import dev.enterprisemanager.mivas.modules.user.enums.UserRole;
 import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -19,7 +20,16 @@ public class User implements UserDetails {
 
     private String email;
 
+    private UserRole role;
+
     private String password;
+
+    public User(String name, String email ,UserRole role, String password) {
+        this.name = name;
+        this.email = email;
+        this.role = role;
+        this.password = password;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -82,5 +92,13 @@ public class User implements UserDetails {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public UserRole getRole() {
+        return role;
+    }
+
+    public void setRole(UserRole role) {
+        this.role = role;
     }
 }
