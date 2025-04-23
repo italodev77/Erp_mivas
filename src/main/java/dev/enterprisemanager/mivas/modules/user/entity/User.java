@@ -1,5 +1,6 @@
 package dev.enterprisemanager.mivas.modules.user.entity;
 
+import dev.enterprisemanager.mivas.modules.enterprises.entity.Enterprise;
 import dev.enterprisemanager.mivas.modules.user.enums.UserRole;
 import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -23,6 +24,10 @@ public class User implements UserDetails {
     private UserRole role;
 
     private String password;
+
+    @ManyToOne
+    @JoinColumn(name = "enterprise_id", nullable = false)
+    private Enterprise enterprise;
 
     public User(String name, String email ,UserRole role, String password) {
         this.name = name;
