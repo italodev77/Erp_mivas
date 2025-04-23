@@ -15,3 +15,9 @@ spring:
 mivas:
   security:
     secret: 5454211844848asd4wwd4w
+logging:
+  file:
+    name: logs/app.log
+  level:
+    root: INFO
+    dev.enterprisemanager: DEBUG
