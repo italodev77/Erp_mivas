@@ -70,4 +70,12 @@ public class AuthenticationController {
         List<User> users = userService.getAllUsers();
         return ResponseEntity.ok(users);
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteUserById(@PathVariable Long id) {
+        log.info("Remoção de usuário com ID: {}", id);
+        userService.deleteUser(id);
+        return ResponseEntity.noContent().build();
+    }
+
 }
