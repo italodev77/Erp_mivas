@@ -1,5 +1,6 @@
 package dev.enterprisemanager.mivas.config.security;
 
+import dev.enterprisemanager.mivas.config.TenantContext;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -21,20 +22,28 @@ public class SecurityFilter extends OncePerRequestFilter {
     private final TokenService tokenService;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            throws ServletException, IOException {
         String authorizationHeader = request.getHeader("Authorization");
+
         if (Strings.isNotEmpty(authorizationHeader) && authorizationHeader.startsWith("Bearer ")) {
             String token = authorizationHeader.substring("Bearer ".length());
             Optional<JWTUserData> optUser = tokenService.validateToken(token);
 
             if (optUser.isPresent()) {
                 JWTUserData userData = optUser.get();
-                UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userData, null, null);
+                TenantContext.setCurrentTenant(userData.getEnterpriseId().toString());
+
+                UsernamePasswordAuthenticationToken authenticationToken =
+                        new UsernamePasswordAuthenticationToken(userData, null, null);
                 SecurityContextHolder.getContext().setAuthentication(authenticationToken);
             }
+        }
+
+        try {
             filterChain.doFilter(request, response);
-        } else {
-            filterChain.doFilter(request, response);
+        } finally {
+            TenantContext.clear(); // Importante para evitar vazamento entre requisições
         }
     }
 }

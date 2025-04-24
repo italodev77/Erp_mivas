@@ -21,6 +21,7 @@ public class TokenService {
 
         return JWT.create()
                 .withClaim("userId", user.getId())
+                .withClaim("enterpriseId", user.getEnterprise().getId())
                 .withSubject(user.getEmail())
                 .withExpiresAt(Instant.now().plusSeconds(86400))
                 .withIssuedAt(Instant.now())
@@ -30,14 +31,12 @@ public class TokenService {
     public Optional<JWTUserData> validateToken(String token) {
         try {
             Algorithm algorithm = Algorithm.HMAC256(secret);
-
-            DecodedJWT decode = JWT.require(algorithm)
-                    .build()
-                    .verify(token);
+            DecodedJWT decode = JWT.require(algorithm).build().verify(token);
 
             return Optional.of(JWTUserData.builder()
                     .email(decode.getSubject())
                     .userId(decode.getClaim("userId").asLong())
+                    .enterpriseId(decode.getClaim("enterpriseId").asLong())
                     .build());
 
         } catch (JWTVerificationException ex) {

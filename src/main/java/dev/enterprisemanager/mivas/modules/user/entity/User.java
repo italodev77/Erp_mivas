@@ -106,4 +106,12 @@ public class User implements UserDetails {
     public void setRole(UserRole role) {
         this.role = role;
     }
+
+    public Enterprise getEnterprise() {
+        return enterprise;
+    }
+
+    public void setEnterprise(Enterprise enterprise) {
+        this.enterprise = enterprise;
+    }
 }
