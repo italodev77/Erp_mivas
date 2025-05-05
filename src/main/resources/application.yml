@@ -3,18 +3,25 @@ spring:
     name: mivas
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/enterpriseDB
+    url: jdbc:postgresql://localhost:5432/masterdb  # banco master
     username: postgres
     password: postgres
     driver-class-name: org.postgresql.Driver
+    hikari:
+      pool-name: MasterPool
 
   jpa:
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: none
     show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
 
 mivas:
   security:
     secret: 5454211844848asd4wwd4w
+
 logging:
   file:
     name: logs/app.log

@@ -1,4 +1,4 @@
-package dev.enterprisemanager.mivas.config;
+package dev.enterprisemanager.mivas.config.context;
 
 public class TenantContext {
     private static final ThreadLocal<String> currentTenant = new ThreadLocal<>();
@@ -15,3 +15,5 @@ public class TenantContext {
         currentTenant.remove();
     }
 }
+
+

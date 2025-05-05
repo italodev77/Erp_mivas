@@ -1,4 +1,5 @@
 package dev.enterprisemanager.mivas.config.security;
+
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
@@ -13,18 +14,17 @@ import java.util.Optional;
 @Component
 public class TokenService {
 
-    @Value("${flix.security.secret}")
+    @Value("${mivas.security.secret}")
     private String secret;
 
     public String generateToken(User user) {
         Algorithm algorithm = Algorithm.HMAC256(secret);
-
         return JWT.create()
+                .withSubject(user.getEmail())
                 .withClaim("userId", user.getId())
                 .withClaim("enterpriseId", user.getEnterprise().getId())
-                .withSubject(user.getEmail())
+                .withClaim("pathDb", user.getEnterprise().getPathdb())
                 .withExpiresAt(Instant.now().plusSeconds(86400))
-                .withIssuedAt(Instant.now())
                 .sign(algorithm);
     }
 
@@ -32,14 +32,13 @@ public class TokenService {
         try {
             Algorithm algorithm = Algorithm.HMAC256(secret);
             DecodedJWT decode = JWT.require(algorithm).build().verify(token);
-
             return Optional.of(JWTUserData.builder()
                     .email(decode.getSubject())
                     .userId(decode.getClaim("userId").asLong())
                     .enterpriseId(decode.getClaim("enterpriseId").asLong())
+                    .pathDb(decode.getClaim("pathDb").asString())
                     .build());
-
-        } catch (JWTVerificationException ex) {
+        } catch (JWTVerificationException e) {
             return Optional.empty();
         }
     }

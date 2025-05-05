@@ -1,6 +1,6 @@
 package dev.enterprisemanager.mivas.modules.user.entity;
 
-import dev.enterprisemanager.mivas.modules.enterprises.entity.Enterprise;
+import dev.enterprisemanager.mivas.modules.enterprise.entity.Enterprise;
 import dev.enterprisemanager.mivas.modules.user.enums.UserRole;
 import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
