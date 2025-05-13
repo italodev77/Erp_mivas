@@ -10,7 +10,7 @@ import java.util.Collection;
 import java.util.List;
 
 @Entity
-@Table(name = "TB_users")
+@Table(name = "TB_usuarios")
 public class User implements UserDetails {
 
     @Id
@@ -21,6 +21,7 @@ public class User implements UserDetails {
 
     private String email;
 
+    @Enumerated(EnumType.STRING)
     private UserRole role;
 
     private String password;
@@ -28,6 +29,10 @@ public class User implements UserDetails {
     @ManyToOne
     @JoinColumn(name = "enterprise_id", nullable = false)
     private Enterprise enterprise;
+
+    public User(){
+
+    }
 
     public User(String name, String email ,UserRole role, String password) {
         this.name = name;
@@ -38,7 +43,7 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of();
+        return List.of((GrantedAuthority) () -> "ROLE_" + role.name());
     }
 
     @Override

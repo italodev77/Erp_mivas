@@ -7,8 +7,10 @@ import dev.enterprisemanager.mivas.config.security.TokenService;
 import dev.enterprisemanager.mivas.modules.Empresas.entity.Empresas;
 import dev.enterprisemanager.mivas.modules.Empresas.repository.EmpresasRepository;
 import dev.enterprisemanager.mivas.modules.user.dto.LoginRequest;
+import dev.enterprisemanager.mivas.modules.user.dto.RegisterDTO;
 import dev.enterprisemanager.mivas.modules.user.entity.User;
 
+import dev.enterprisemanager.mivas.modules.user.repository.IUserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -28,6 +30,7 @@ public class AuthController {
     private final TokenService tokenService;
     private final EmpresasRepository empresasRepository;
     private final DataSourceProvider dataSourceProvider;
+    private final IUserRepository userRepository;
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
@@ -37,14 +40,14 @@ public class AuthController {
 
         // 2. Cria ou reutiliza DataSource para a empresa
         dataSourceProvider.getOrCreateDataSource(
-                empresa.getPathDb(),
+                empresa.getPathdb(),
                 empresa.getJdbcUrl(),
                 empresa.getDbUser(),
                 empresa.getDbPassword()
         );
 
         // 3. Define tenant no contexto
-        TenantContext.setCurrentTenant(empresa.getPathDb());
+        TenantContext.setCurrentTenant(empresa.getPathdb());
 
         try {
             // 4. Autentica o usuário com o banco da empresa
@@ -55,15 +58,17 @@ public class AuthController {
                     )
             );
 
-            // 5. Define autenticação no contexto
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
-            // 6. Gera token JWT
-            String jwt = tokenService.generateToken((User) authentication);
+            // 5. Gera token JWT
+            String jwt = tokenService.generateToken((User) authentication.getPrincipal());
 
             return ResponseEntity.ok(Map.of("token", jwt));
         } finally {
-            TenantContext.clear(); // sempre limpe para evitar vazamento de contexto entre requisições
+            TenantContext.clear();
         }
     }
+
+
 }
+
